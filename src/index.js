@@ -1,12 +1,22 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import ReactDom from "react-dom";
+import React from "react";
+import { TrelloserviceProvider } from "./components/trello-service-context";
+import TrelloService from "./services/trello-service";
+import ErrorBoundry from "./components/error-boundry";
+import App from "./components/app";
+import {BrowserRouter as Router} from "react-router-dom";
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const trelloService = new TrelloService();
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+ReactDom.render(
+
+    <ErrorBoundry>
+        <TrelloserviceProvider value={trelloService}>
+            <Router>
+                <App />
+            </Router>
+        </TrelloserviceProvider>
+    </ErrorBoundry>,
+
+    document.getElementById("root")
+  );

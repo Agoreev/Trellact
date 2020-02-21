@@ -1,0 +1,26 @@
+.cards-list__desk-title {
+  padding: 15px 10px;
+  margin: 20px 20px 20px 0;
+  background-color: #94e49b;
+  width: 250px;
+  text-align: center;
+  border-radius: 5px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+  font-family: "Roboto Condensed", sans-serif;
+  border: none;
+  font-size: 1.6rem;
+  color: #333;
+}
+
+.cards-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.cards-list .card:first-child {
+  margin-left: 0;
+}
+
+.cards-list .card:last-child {
+  margin-right: 0;
+}
