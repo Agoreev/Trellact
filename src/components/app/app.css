@@ -145,8 +145,7 @@ a {
   display: block;
   transition: 0.2s;
   font-size: 1rem;
-  color: #333;
-  font-weight: 700;
+  color: white;
 }
 
 .form__field:focus {
@@ -160,6 +159,18 @@ a {
 .form__field:required,
 .form__field:invalid {
   box-shadow: none;
+}
+
+.cancel-icon {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+.cancel-icon:hover {
+  color: red;
 }
 
 .back-link {

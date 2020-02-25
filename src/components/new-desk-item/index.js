@@ -1,2 +1,2 @@
-import NewDeskItem from "./new-desk-item";
-export default NewDeskItem;
+import NewCard from "./new-desk-item";
+export default NewCard;

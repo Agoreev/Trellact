@@ -1,5 +1,6 @@
 export default class TrelloService {
     maxId = 100;
+    maxCardId = 100;
     data = {
         desks: [
             {
@@ -90,6 +91,7 @@ export default class TrelloService {
             const cards = this.data.cards.filter(
                 card => card.deskId === parseInt(id)
             );
+
             const items = this.data.items.filter(item => {
                 return cards.some(card => {
                     return item.cardId === card.id;
@@ -97,7 +99,7 @@ export default class TrelloService {
             });
 
             const res = {
-                desk: desk.name,
+                desk: desk,
                 cards: cards,
                 items: items
             };
@@ -111,8 +113,20 @@ export default class TrelloService {
                 id: this.maxId++,
                 name: name
             };
-            this.data = [...this.data.desks, desk];
-            resolve(this.data);
+            this.data.desks = [...this.data.desks, desk];
+            resolve(this.data.desks);
+        });
+    };
+
+    createCard = (name, deskId) => {
+        return new Promise(resolve => {
+            const card = {
+                id: this.maxCardId++,
+                name: name,
+                deskId: deskId
+            };
+            this.data.cards = [...this.data.cards, card];
+            resolve(card);
         });
     };
 

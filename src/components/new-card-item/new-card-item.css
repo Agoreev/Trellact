@@ -1,0 +1,26 @@
+.new-card-item {
+    position: relative;
+    font-size: 1.2rem;
+    color: white;
+    background-color: #94e49b;
+    box-sizing: content-box;
+    height: 100px;
+    cursor: pointer;
+}
+
+.new-card-item:hover {
+    transform: scale(1.05);
+}
+
+.new-card-item.active {
+    cursor: initial;
+}
+
+.new-card-item.active:hover {
+    transform: none;
+}
+
+.new-card-item__description {
+    display: block;
+    margin: 0 -10px;
+}
