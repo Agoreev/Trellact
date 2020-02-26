@@ -6,7 +6,14 @@ import { withTrelloService } from "../hoc";
 import Spinner from "../spinner";
 import ErrorIndicator from "../error-indicator";
 
-const CardList = ({ desk, cards, items, onItemDone, children }) => {
+const CardList = ({
+    desk,
+    cards,
+    items,
+    onItemDone,
+    onItemAdded,
+    children
+}) => {
     const cardsList = cards.map(card => {
         return (
             <CardListItem
@@ -15,6 +22,7 @@ const CardList = ({ desk, cards, items, onItemDone, children }) => {
                 name={card.name}
                 items={items}
                 onItemDone={onItemDone}
+                onItemAdded={onItemAdded}
             ></CardListItem>
         );
     });
@@ -99,6 +107,21 @@ class CardListContainer extends React.Component {
         );
     };
 
+    onItemAdded = (itemName, cardId) => {
+        this.props.trelloService.createItem(itemName, cardId).then(
+            data => {
+                this.setState({
+                    items: [...this.state.items, data]
+                });
+            },
+            error => {
+                this.setState({
+                    error: true
+                });
+            }
+        );
+    };
+
     componentDidMount() {
         const deskId = this.props.deskId;
         this.updateDesk(deskId);
@@ -118,6 +141,7 @@ class CardListContainer extends React.Component {
                 cards={cards}
                 items={items}
                 onItemDone={this.onItemDone}
+                onItemAdded={this.onItemAdded}
             >
                 <NewCardItem onCardAdded={this.onCardAdded} deskId={desk.id} />
             </CardList>

@@ -101,66 +101,6 @@ a {
   color: #eee;
 }
 
-.form__group {
-  position: relative;
-  padding: 15px 0 0;
-  margin-top: 5px;
-}
-
-.form__field {
-  font-family: inherit;
-  width: 100%;
-  border: 0;
-  border-bottom: 2px solid white;
-  outline: 0;
-  font-size: 1.2rem;
-  color: white;
-  padding: 7px 0;
-  background: transparent;
-  transition: border-color 0.2s;
-}
-
-.form__field::placeholder {
-  color: transparent;
-}
-
-.form__field:placeholder-shown~.form__label {
-  font-size: 1.2rem;
-  cursor: text;
-  top: 20px;
-}
-
-.form__label {
-  position: absolute;
-  top: 0;
-  display: block;
-  transition: 0.2s;
-  font-size: 1rem;
-  color: white;
-}
-
-.form__field:focus~.form__label {
-  position: absolute;
-  top: 0;
-  display: block;
-  transition: 0.2s;
-  font-size: 1rem;
-  color: white;
-}
-
-.form__field:focus {
-  padding-bottom: 6px;
-  border-width: 3px;
-  border-image: linear-gradient(to right, #11998e, #94e49b);
-  border-image-slice: 1;
-}
-
-/* reset input */
-.form__field:required,
-.form__field:invalid {
-  box-shadow: none;
-}
-
 .cancel-icon {
   position: absolute;
   top: -7px;
@@ -187,4 +127,14 @@ a {
 
 .back-link__text {
   margin-left: 10px;
+}
+
+.text-input {
+  display: block;
+  width: 100%;
+  font-size: 1.05rem;
+  padding: 10px;
+  box-sizing: border-box;
+  border: none;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);
 }

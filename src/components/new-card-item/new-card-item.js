@@ -51,26 +51,19 @@ class NewCardItem extends React.Component {
                         onCardAdded(newCardName, deskId);
                     }}
                 >
-                    <div className="form__group">
-                        <input
-                            type="text"
-                            name="card-title"
-                            id="card-title"
-                            value={newCardName}
-                            className="form__field"
-                            placeholder="Card title"
-                            required
-                            onChange={e =>
-                                this.onCardNameChange(e.target.value)
-                            }
-                            ref={input => {
-                                this.nameInput = input;
-                            }}
-                        />
-                        <label htmlFor="card-title" className="form__label">
-                            List title
-                        </label>
-                    </div>
+                    <input
+                        type="text"
+                        name="card-title"
+                        id="card-title"
+                        value={newCardName}
+                        className="text-input"
+                        placeholder="Card title"
+                        required
+                        onChange={e => this.onCardNameChange(e.target.value)}
+                        ref={input => {
+                            this.nameInput = input;
+                        }}
+                    />
                 </form>
                 <i
                     className="fas fa-times-circle cancel-icon"

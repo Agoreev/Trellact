@@ -51,26 +51,20 @@ class NewDeskItem extends React.Component {
                         onDeskAdded(newDeskName);
                     }}
                 >
-                    <div className="form__group">
-                        <input
-                            type="text"
-                            name="desk-title"
-                            id="desk-title"
-                            value={newDeskName}
-                            className="form__field"
-                            placeholder="Desk title"
-                            required
-                            onChange={e =>
-                                this.onDeskNameChange(e.target.value)
-                            }
-                            ref={input => {
-                                this.nameInput = input;
-                            }}
-                        />
-                        <label htmlFor="desk-title" className="form__label">
-                            Desk title
-                        </label>
-                    </div>
+                    <input
+                        type="text"
+                        name="desk-title"
+                        id="desk-title"
+                        value={newDeskName}
+                        className="text-input"
+                        placeholder="Desk title"
+                        required
+                        onChange={e => this.onDeskNameChange(e.target.value)}
+                        ref={input => {
+                            this.nameInput = input;
+                        }}
+                    />
+
                     {/* <div className="new-desk-item__controls">
                         <button
                             className="btn btn_cancel"

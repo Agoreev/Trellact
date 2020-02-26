@@ -1,6 +1,7 @@
 export default class TrelloService {
     maxId = 100;
     maxCardId = 100;
+    maxItemId = 100;
     data = {
         desks: [
             {
@@ -127,6 +128,18 @@ export default class TrelloService {
             };
             this.data.cards = [...this.data.cards, card];
             resolve(card);
+        });
+    };
+
+    createItem = (name, cardId) => {
+        return new Promise(resolve => {
+            const item = {
+                id: this.maxItemId++,
+                name: name,
+                cardId: cardId
+            };
+            this.data.items = [...this.data.items, item];
+            resolve(item);
         });
     };
 
