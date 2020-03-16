@@ -5,30 +5,23 @@ import NewCardItem from "../new-card-item";
 import { withTrelloService } from "../hoc";
 import Spinner from "../spinner";
 import ErrorIndicator from "../error-indicator";
+import { DragDropContext } from "react-beautiful-dnd";
+import DeskContext from "../desk-context";
+import { useContext } from "react";
 
-const CardList = ({
-    desk,
-    cards,
-    items,
-    onItemDone,
-    onItemAdded,
-    children
-}) => {
-    const cardsList = cards.map(card => {
+const CardList = ({ children }) => {
+    const deskContext = useContext(DeskContext);
+    const cardsList = deskContext.cards.map(card => {
         return (
             <CardListItem
                 key={card.id}
                 cardId={card.id}
                 name={card.name}
-                items={items}
-                onItemDone={onItemDone}
-                onItemAdded={onItemAdded}
             ></CardListItem>
         );
     });
     return (
         <React.Fragment>
-            <div className="cards-list__desk-title">{desk.name}</div>
             <div className="cards-list">
                 {cardsList}
                 {children}
@@ -47,7 +40,6 @@ class CardListContainer extends React.Component {
     };
 
     updateDesk = deskId => {
-        console.log(deskId);
         this.props.trelloService.getDesk(deskId).then(
             data => {
                 const { desk, cards, items } = data;
@@ -122,6 +114,52 @@ class CardListContainer extends React.Component {
         );
     };
 
+    onDragEnd = result => {
+        const { destination, source, draggableId } = result;
+        if (!destination) {
+            return;
+        }
+
+        if (
+            destination.droppableId === source.droppableId &&
+            destination.index === source.index
+        ) {
+            return;
+        }
+        const itemIdx = this.state.items.findIndex(item => {
+            return item.id === parseInt(draggableId);
+        });
+        const item = this.state.items[itemIdx];
+        const newItem = {
+            ...item,
+            cardId: parseInt(destination.droppableId),
+            order: destination.index
+        };
+
+        const itemsWithoutSortedCard = this.state.items.filter(itm => {
+            return itm.cardId !== newItem.cardId && itm.id !== item.id;
+        });
+
+        const itemsToModifyOrder = this.state.items.filter(itm => {
+            return itm.cardId === newItem.cardId;
+        });
+
+        for (let i = 0; i < itemsToModifyOrder.length; i++) {
+            if (itemsToModifyOrder[i].order >= newItem.order) {
+                itemsToModifyOrder[i].order++;
+            }
+        }
+        const newItems = [
+            ...itemsWithoutSortedCard,
+            ...itemsToModifyOrder,
+            newItem
+        ];
+
+        this.setState({
+            items: newItems
+        });
+    };
+
     componentDidMount() {
         const deskId = this.props.deskId;
         this.updateDesk(deskId);
@@ -136,15 +174,27 @@ class CardListContainer extends React.Component {
             return <ErrorIndicator />;
         }
         return (
-            <CardList
-                desk={desk}
-                cards={cards}
-                items={items}
-                onItemDone={this.onItemDone}
-                onItemAdded={this.onItemAdded}
-            >
-                <NewCardItem onCardAdded={this.onCardAdded} deskId={desk.id} />
-            </CardList>
+            <React.Fragment>
+                <div className="cards-list__desk-title">{desk.name}</div>
+                <DragDropContext onDragEnd={this.onDragEnd}>
+                    <DeskContext.Provider
+                        value={{
+                            desk: desk,
+                            cards: cards,
+                            items: items,
+                            onItemDone: this.onItemDone,
+                            onItemAdded: this.onItemAdded
+                        }}
+                    >
+                        <CardList>
+                            <NewCardItem
+                                onCardAdded={this.onCardAdded}
+                                deskId={desk.id}
+                            />
+                        </CardList>
+                    </DeskContext.Provider>
+                </DragDropContext>
+            </React.Fragment>
         );
     }
 }

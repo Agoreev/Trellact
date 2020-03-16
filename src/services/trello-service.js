@@ -2,6 +2,42 @@ export default class TrelloService {
     maxId = 100;
     maxCardId = 100;
     maxItemId = 100;
+    unnormalizedData = [
+        {
+            id: 1,
+            name: "tasks",
+            cards: [
+                {
+                    id: 1,
+                    name: "Monday",
+                    items: [
+                        {
+                            id: 1,
+                            name: "get to work"
+                        },
+                        {
+                            id: 2,
+                            name: "clean the house"
+                        }
+                    ]
+                },
+                {
+                    id: 2,
+                    name: "Thuesday",
+                    items: [
+                        {
+                            id: 3,
+                            name: "go to gym"
+                        },
+                        {
+                            id: 4,
+                            name: "go to school"
+                        }
+                    ]
+                }
+            ]
+        }
+    ];
     data = {
         desks: [
             {
@@ -40,42 +76,50 @@ export default class TrelloService {
                 id: 1,
                 name: "get to work",
                 state: "done",
-                cardId: 1
+                cardId: 1,
+                order: 1
             },
             {
                 id: 2,
                 name: "clean house",
-                cardId: 1
+                cardId: 1,
+                order: 2
             },
             {
                 id: 3,
                 name: "go shopping",
-                cardId: 2
+                cardId: 2,
+                order: 1
             },
             {
                 id: 4,
                 name: "go to gym",
-                cardId: 2
+                cardId: 2,
+                order: 2
             },
             {
                 id: 5,
                 name: "get to work",
-                cardId: 3
+                cardId: 3,
+                order: 1
             },
             {
                 id: 6,
                 name: "clean house",
-                cardId: 3
+                cardId: 3,
+                order: 2
             },
             {
                 id: 7,
                 name: "go shopping",
-                cardId: 4
+                cardId: 4,
+                order: 1
             },
             {
                 id: 8,
                 name: "go to gym",
-                cardId: 4
+                cardId: 4,
+                order: 2
             }
         ]
     };
@@ -133,10 +177,15 @@ export default class TrelloService {
 
     createItem = (name, cardId) => {
         return new Promise(resolve => {
+            const items = this.data.items.filter(item => {
+                return item.cardId === cardId;
+            });
+
             const item = {
                 id: this.maxItemId++,
                 name: name,
-                cardId: cardId
+                cardId: cardId,
+                order: items.length + 1
             };
             this.data.items = [...this.data.items, item];
             resolve(item);
