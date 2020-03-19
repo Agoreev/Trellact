@@ -1,14 +1,14 @@
 import React from "react";
 import "./item-list-item.css";
 import { Draggable } from "react-beautiful-dnd";
-import DeskContext from "../desk-context";
+import DeskContext from "../../desk-context";
 import { useContext } from "react";
 
 const ItemListItem = ({ item, index }) => {
     const deskContext = useContext(DeskContext);
     const { onItemDone } = deskContext;
     return (
-        <Draggable draggableId={item.id.toString()} index={index}>
+        <Draggable draggableId={item.id} index={index}>
             {provided => (
                 <div
                     {...provided.draggableProps}

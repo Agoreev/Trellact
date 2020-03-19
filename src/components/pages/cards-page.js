@@ -1,5 +1,5 @@
 import React from "react";
-import CardListContainer from "../card-list";
+import CardList from "../card-list";
 import { withRouter, Link } from "react-router-dom";
 
 const CardsPage = ({ match }) => {
@@ -10,7 +10,7 @@ const CardsPage = ({ match }) => {
                 <span className="back-link__text">Back</span>
             </Link>
 
-            <CardListContainer deskId={match.params.id} />
+            <CardList deskId={match.params.id} />
         </div>
     );
 };

@@ -1,212 +1,108 @@
 export default class TrelloService {
-    maxId = 100;
+    maxDeskId = 100;
     maxCardId = 100;
     maxItemId = 100;
-    unnormalizedData = [
-        {
-            id: 1,
-            name: "tasks",
-            cards: [
-                {
-                    id: 1,
-                    name: "Monday",
-                    items: [
-                        {
-                            id: 1,
-                            name: "get to work"
-                        },
-                        {
-                            id: 2,
-                            name: "clean the house"
-                        }
-                    ]
-                },
-                {
-                    id: 2,
-                    name: "Thuesday",
-                    items: [
-                        {
-                            id: 3,
-                            name: "go to gym"
-                        },
-                        {
-                            id: 4,
-                            name: "go to school"
-                        }
-                    ]
-                }
-            ]
-        }
-    ];
+
     data = {
-        desks: [
-            {
-                id: 1,
-                name: "tasks"
-            },
-            {
-                id: 2,
-                name: "Home work"
+        desks: {
+            "desk-1": {
+                id: "desk-1",
+                name: "Tasks",
+                cardIds: ["card-1", "card-2"]
             }
-        ],
-        cards: [
-            {
-                id: 1,
+        },
+        cards: {
+            "card-1": {
+                id: "card-1",
                 name: "Monday",
-                deskId: 1
+                itemIds: ["item-1", "item-2"]
             },
-            {
-                id: 2,
+            "card-2": {
+                id: "card-2",
                 name: "Thuesday",
-                deskId: 1
-            },
-            {
-                id: 3,
-                name: "Friday",
-                deskId: 2
-            },
-            {
-                id: 4,
-                name: "Saturday",
-                deskId: 2
+                itemIds: ["item-3", "item-4"]
             }
-        ],
-        items: [
-            {
-                id: 1,
-                name: "get to work",
-                state: "done",
-                cardId: 1,
-                order: 1
+        },
+        items: {
+            "item-1": {
+                id: "item-1",
+                name: "Clean house"
             },
-            {
-                id: 2,
-                name: "clean house",
-                cardId: 1,
-                order: 2
+            "item-2": {
+                id: "item-2",
+                name: "Make dinner"
             },
-            {
-                id: 3,
-                name: "go shopping",
-                cardId: 2,
-                order: 1
+            "item-3": {
+                id: "item-3",
+                name: "Make homework"
             },
-            {
-                id: 4,
-                name: "go to gym",
-                cardId: 2,
-                order: 2
-            },
-            {
-                id: 5,
-                name: "get to work",
-                cardId: 3,
-                order: 1
-            },
-            {
-                id: 6,
-                name: "clean house",
-                cardId: 3,
-                order: 2
-            },
-            {
-                id: 7,
-                name: "go shopping",
-                cardId: 4,
-                order: 1
-            },
-            {
-                id: 8,
-                name: "go to gym",
-                cardId: 4,
-                order: 2
+            "item-4": {
+                id: "item-4",
+                name: "Go to gym"
             }
-        ]
+        },
+        desksOrder: ["desk-1"]
     };
 
     getDesks = () => {
         return new Promise(resolve => {
-            resolve(this.data.desks);
-        });
-    };
-
-    getDesk = id => {
-        return new Promise(resolve => {
-            const desk = this.data.desks.find(desk => desk.id === parseInt(id));
-            const cards = this.data.cards.filter(
-                card => card.deskId === parseInt(id)
-            );
-
-            const items = this.data.items.filter(item => {
-                return cards.some(card => {
-                    return item.cardId === card.id;
-                });
-            });
-
-            const res = {
-                desk: desk,
-                cards: cards,
-                items: items
-            };
-            resolve(res);
+            resolve(this.data);
         });
     };
 
     createDesk = name => {
         return new Promise(resolve => {
+            const newDeskId = "desk-" + this.maxDeskId++;
             const desk = {
-                id: this.maxId++,
-                name: name
+                [newDeskId]: {
+                    id: newDeskId,
+                    name: name,
+                    cardIds: []
+                }
             };
-            this.data.desks = [...this.data.desks, desk];
-            resolve(this.data.desks);
+            this.data.desks = { ...this.data.desks, desk };
+            this.data.desksOrder = [...this.data.desksOrder, newDeskId];
+            resolve(desk);
         });
     };
 
     createCard = (name, deskId) => {
         return new Promise(resolve => {
+            const newCardId = "card-" + this.maxCardId++;
             const card = {
-                id: this.maxCardId++,
-                name: name,
-                deskId: deskId
+                [newCardId]: {
+                    id: newCardId,
+                    name: name,
+                    itemIds: []
+                }
             };
-            this.data.cards = [...this.data.cards, card];
+            this.data.cards = { ...this.data.cards, card };
+            this.data.desks[deskId].cardIds.push(newCardId);
             resolve(card);
         });
     };
 
     createItem = (name, cardId) => {
         return new Promise(resolve => {
-            const items = this.data.items.filter(item => {
-                return item.cardId === cardId;
-            });
+            const newItemId = "item-" + this.maxItemId++;
 
             const item = {
-                id: this.maxItemId++,
-                name: name,
-                cardId: cardId,
-                order: items.length + 1
+                [newItemId]: {
+                    id: newItemId,
+                    name: name
+                }
             };
-            this.data.items = [...this.data.items, item];
+            this.data.items = { ...this.data.items, item };
+            this.data.cards[cardId].itemIds.push(newItemId);
             resolve(item);
         });
     };
 
-    setItemState = item => {
+    setItemState = itm => {
         return new Promise(resolve => {
-            const itemIdx = this.data.items.findIndex(itm => {
-                return itm.id === item.id;
-            });
-            const newItem = {
-                ...item,
-                state: item.state === "done" ? "active" : "done"
-            };
-            this.data.items = [
-                ...this.data.items.slice(0, itemIdx),
-                newItem,
-                ...this.data.items.slice(itemIdx + 1)
-            ];
-            resolve(newItem);
+            const item = this.data.items[itm.id];
+            item.state = item.state === "done" ? "active" : "done";
+            resolve(item);
         });
     };
 }

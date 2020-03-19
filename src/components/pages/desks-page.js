@@ -1,10 +1,8 @@
 import React from "react";
-import DeskListContainer from "../desk-list";
+import DeskList from "../desk-list";
 
 const DesksPage = () => {
-  return (
-    <DeskListContainer />
-  );
+    return <DeskList />;
 };
 
 export default DesksPage;

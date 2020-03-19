@@ -1,2 +1,2 @@
-import DeskContext from "./desk-context";
-export default DeskContext;
+import DesksContext from "./desk-context";
+export default DesksContext;

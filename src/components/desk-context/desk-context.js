@@ -1,10 +1,14 @@
 import React from "react";
 
-const DeskContext = React.createContext({
-    desk: {},
-    cards: [],
-    items: [],
+const DesksContext = React.createContext({
+    desks: {},
+    cards: {},
+    items: {},
+    desksOrder: [],
+    onDeskAdded: () => {},
+    onCardAdded: () => {},
+    onItemDragEnd: () => {},
     onItemDone: () => {},
     onItemAdded: () => {}
 });
-export default DeskContext;
+export default DesksContext;

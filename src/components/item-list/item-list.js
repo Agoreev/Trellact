@@ -1,23 +1,19 @@
 import React from "react";
 import "./item-list.css";
-import ItemListItem from "../item-list-item";
-import NewItem from "../new-item";
+import ItemListItem from "./item-list-item/item-list-item";
+import NewItem from "./new-item";
 import { Droppable } from "react-beautiful-dnd";
 import DeskContext from "../desk-context";
 import { useContext } from "react";
 
 const ItemList = ({ cardId }) => {
     const deskContext = useContext(DeskContext);
-    const { items, onItemAdded } = deskContext;
-    const itemsList = items
-        .filter(item => {
-            return item.cardId === cardId;
-        })
-        .map((item, index) => {
-            return (
-                <ItemListItem item={item} key={item.id} index={item.order} />
-            );
-        });
+    const { cards, items, onItemAdded } = deskContext;
+    const card = cards[cardId];
+    const itemsList = card.itemIds.map((itemId, index) => {
+        const item = items[itemId];
+        return <ItemListItem item={item} key={item.id} index={index} />;
+    });
     return (
         <div className="items-list">
             <NewItem onItemAdded={onItemAdded} cardId={cardId} />

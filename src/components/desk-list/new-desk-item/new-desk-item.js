@@ -1,6 +1,5 @@
 import React from "react";
 import "./new-desk-item.css";
-import { withTrelloService } from "../hoc";
 
 class NewDeskItem extends React.Component {
     state = {
@@ -94,4 +93,4 @@ class NewDeskItem extends React.Component {
     };
 }
 
-export default withTrelloService(NewDeskItem);
+export default NewDeskItem;
