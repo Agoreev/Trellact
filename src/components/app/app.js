@@ -126,25 +126,21 @@ class App extends Component {
     };
 
     onItemDone = item => {
-        this.props.trelloService.setItemState(item).then(
-            newItem => {
-                this.setState({
-                    items: {
-                        ...this.state.items,
-                        newItem
+        this.setState(state => {
+            return {
+                items: {
+                    ...state.items,
+                    [item.id]: {
+                        ...item,
+                        done: item.done ? false : true
                     }
-                });
-            },
-            error => {
-                this.setState({
-                    error: error
-                });
-            }
-        );
+                }
+            };
+        });
     };
 
     onItemDragEnd = result => {
-        const { destination, source, draggableId } = result;
+        const { destination, source, draggableId, type } = result;
 
         if (!destination) {
             return;
@@ -154,6 +150,26 @@ class App extends Component {
             destination.droppableId === source.droppableId &&
             destination.index === source.index
         ) {
+            return;
+        }
+
+        if (type === "card") {
+            const desk = this.state.desks[source.droppableId];
+            const newCardOrder = [...desk.cardIds];
+            newCardOrder.splice(source.index, 1);
+            newCardOrder.splice(destination.index, 0, draggableId);
+
+            this.setState(state => {
+                return {
+                    desks: {
+                        ...state.desks,
+                        [desk.id]: {
+                            ...desk,
+                            cardIds: newCardOrder
+                        }
+                    }
+                };
+            });
             return;
         }
 

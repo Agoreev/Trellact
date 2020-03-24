@@ -7,7 +7,7 @@ import { useContext } from "react";
 const ItemListItem = ({ item, index }) => {
     const deskContext = useContext(DeskContext);
     const { onItemDone } = deskContext;
-    const itemStateClass = item.state ? "item " + item.state : "item";
+    const itemStateClass = item.done ? "item done" : "item";
     return (
         <Draggable draggableId={item.id} index={index}>
             {(provided, snapshot) => (

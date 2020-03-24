@@ -60,7 +60,7 @@ export default class TrelloService {
                     cardIds: []
                 }
             };
-            this.data.desks = { ...this.data.desks, desk };
+            //this.data.desks = { ...this.data.desks, desk };
             // this.data.desksOrder = [...this.data.desksOrder, newDeskId];
             resolve(desk);
         });
@@ -76,7 +76,7 @@ export default class TrelloService {
                     itemIds: []
                 }
             };
-            this.data.cards = { ...this.data.cards, card };
+            //this.data.cards = { ...this.data.cards, card };
             // this.data.desks[deskId].cardIds.push(newCardId);
             resolve(card);
         });
@@ -93,7 +93,7 @@ export default class TrelloService {
                 }
             };
 
-            this.data.items = { ...this.data.items, item };
+            //this.data.items = { ...this.data.items, item };
             // this.data.cards[cardId].itemIds = [
             //     ...this.data.cards[cardId].itemIds,
             //     newItemId
@@ -105,7 +105,7 @@ export default class TrelloService {
     setItemState = itm => {
         return new Promise(resolve => {
             const item = this.data.items[itm.id];
-            item.state = item.state === "done" ? "active" : "done";
+            item["done"] = item["done"] ? false : true;
             resolve(item);
         });
     };

@@ -1,14 +1,25 @@
 import React from "react";
 import "./card-list-item.css";
 import ItemList from "../../item-list";
+import { Draggable } from "react-beautiful-dnd";
 
-const CardListItem = ({ cardId, name }) => {
+const CardListItem = ({ card, index }) => {
     return (
-        <div className="card">
-            <span className="card__title">{name}</span>
+        <Draggable draggableId={card.id} index={index}>
+            {provided => (
+                <div
+                    className="card"
+                    {...provided.draggableProps}
+                    ref={provided.innerRef}
+                >
+                    <span className="card__title" {...provided.dragHandleProps}>
+                        {card.name}
+                    </span>
 
-            <ItemList cardId={cardId}></ItemList>
-        </div>
+                    <ItemList cardId={card.id}></ItemList>
+                </div>
+            )}
+        </Draggable>
     );
 };
 

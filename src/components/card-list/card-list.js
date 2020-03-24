@@ -2,7 +2,7 @@ import React from "react";
 import "./card-list.css";
 import CardListItem from "./card-list-item";
 import NewCardItem from "./new-card-item";
-import { DragDropContext } from "react-beautiful-dnd";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import DesksContext from "../desk-context";
 import { useContext } from "react";
 
@@ -10,13 +10,13 @@ const CardList = ({ deskId }) => {
     const desksContext = useContext(DesksContext);
     const { desks, cards, onItemDragEnd, onCardAdded } = desksContext;
     const desk = desks[deskId];
-    const cardsList = desk.cardIds.map(cardId => {
+    const cardsList = desk.cardIds.map((cardId, index) => {
         const card = cards[cardId];
         return (
             <CardListItem
                 key={card.id}
-                cardId={card.id}
-                name={card.name}
+                card={card}
+                index={index}
             ></CardListItem>
         );
     });
@@ -24,10 +24,26 @@ const CardList = ({ deskId }) => {
         <React.Fragment>
             <div className="cards-list__desk-title">{desk.name}</div>
             <DragDropContext onDragEnd={onItemDragEnd}>
-                <div className="cards-list">
-                    {cardsList}
-                    <NewCardItem onCardAdded={onCardAdded} deskId={desk.id} />
-                </div>
+                <Droppable
+                    droppableId={deskId.toString()}
+                    direction="horizontal"
+                    type="card"
+                >
+                    {provided => (
+                        <div
+                            className="cards-list"
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                        >
+                            {cardsList}
+                            {provided.placeholder}
+                            <NewCardItem
+                                onCardAdded={onCardAdded}
+                                deskId={desk.id}
+                            />
+                        </div>
+                    )}
+                </Droppable>
             </DragDropContext>
         </React.Fragment>
     );

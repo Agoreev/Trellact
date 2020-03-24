@@ -17,7 +17,7 @@ const ItemList = ({ cardId }) => {
     return (
         <div className="items-list">
             <NewItem onItemAdded={onItemAdded} cardId={cardId} />
-            <Droppable droppableId={cardId.toString()}>
+            <Droppable droppableId={cardId.toString()} type="item">
                 {(provided, snapshot) => (
                     <div
                         className={`items-list__container ${
