@@ -18,8 +18,14 @@ const ItemList = ({ cardId }) => {
         <div className="items-list">
             <NewItem onItemAdded={onItemAdded} cardId={cardId} />
             <Droppable droppableId={cardId.toString()}>
-                {provided => (
-                    <div ref={provided.innerRef} {...provided.droppableProps}>
+                {(provided, snapshot) => (
+                    <div
+                        className={`items-list__container ${
+                            snapshot.isDraggingOver ? "dragging-over" : ""
+                        }`}
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                    >
                         {itemsList}
                         {provided.placeholder}
                     </div>

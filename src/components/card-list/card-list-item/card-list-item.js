@@ -1,6 +1,6 @@
 import React from "react";
 import "./card-list-item.css";
-import ItemList from "../item-list";
+import ItemList from "../../item-list";
 
 const CardListItem = ({ cardId, name }) => {
     return (

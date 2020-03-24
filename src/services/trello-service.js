@@ -61,7 +61,7 @@ export default class TrelloService {
                 }
             };
             this.data.desks = { ...this.data.desks, desk };
-            this.data.desksOrder = [...this.data.desksOrder, newDeskId];
+            // this.data.desksOrder = [...this.data.desksOrder, newDeskId];
             resolve(desk);
         });
     };
@@ -77,7 +77,7 @@ export default class TrelloService {
                 }
             };
             this.data.cards = { ...this.data.cards, card };
-            this.data.desks[deskId].cardIds.push(newCardId);
+            // this.data.desks[deskId].cardIds.push(newCardId);
             resolve(card);
         });
     };
@@ -92,8 +92,12 @@ export default class TrelloService {
                     name: name
                 }
             };
+
             this.data.items = { ...this.data.items, item };
-            this.data.cards[cardId].itemIds.push(newItemId);
+            // this.data.cards[cardId].itemIds = [
+            //     ...this.data.cards[cardId].itemIds,
+            //     newItemId
+            // ];
             resolve(item);
         });
     };

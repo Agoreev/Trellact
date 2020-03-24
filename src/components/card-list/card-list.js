@@ -1,7 +1,7 @@
 import React from "react";
 import "./card-list.css";
-import CardListItem from "../card-list-item";
-import NewCardItem from "../new-card-item";
+import CardListItem from "./card-list-item";
+import NewCardItem from "./new-card-item";
 import { DragDropContext } from "react-beautiful-dnd";
 import DesksContext from "../desk-context";
 import { useContext } from "react";

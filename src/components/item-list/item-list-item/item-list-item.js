@@ -7,14 +7,17 @@ import { useContext } from "react";
 const ItemListItem = ({ item, index }) => {
     const deskContext = useContext(DeskContext);
     const { onItemDone } = deskContext;
+    const itemStateClass = item.state ? "item " + item.state : "item";
     return (
         <Draggable draggableId={item.id} index={index}>
-            {provided => (
+            {(provided, snapshot) => (
                 <div
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                     ref={provided.innerRef}
-                    className={item.state ? "item " + item.state : "item"}
+                    className={`${itemStateClass} ${
+                        snapshot.isDragging ? "dragging" : ""
+                    }`}
                     onClick={() => onItemDone(item)}
                 >
                     <span className="item__text">{item.name}</span>

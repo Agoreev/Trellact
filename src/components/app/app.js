@@ -66,11 +66,22 @@ class App extends Component {
     onCardAdded = (cardName, deskId) => {
         this.props.trelloService.createCard(cardName, deskId).then(
             card => {
+                const newCardIds = [
+                    ...this.state.desks[deskId].cardIds,
+                    Object.keys(card)[0]
+                ];
                 this.setState(state => {
                     return {
                         cards: {
                             ...state.cards,
                             ...card
+                        },
+                        desks: {
+                            ...state.desks,
+                            [deskId]: {
+                                ...this.state.desks[deskId],
+                                cardIds: newCardIds
+                            }
                         }
                     };
                 });
@@ -86,11 +97,22 @@ class App extends Component {
     onItemAdded = (itemName, cardId) => {
         this.props.trelloService.createItem(itemName, cardId).then(
             item => {
+                const newItemIds = [
+                    ...this.state.cards[cardId].itemIds,
+                    Object.keys(item)[0]
+                ];
                 this.setState(state => {
                     return {
                         items: {
                             ...state.items,
                             ...item
+                        },
+                        cards: {
+                            ...state.cards,
+                            [cardId]: {
+                                ...this.state.cards[cardId],
+                                itemIds: newItemIds
+                            }
                         }
                     };
                 });
