@@ -7,7 +7,7 @@ const DesksContext = React.createContext({
     desksOrder: [],
     onDeskAdded: () => {},
     onCardAdded: () => {},
-    onItemDragEnd: () => {},
+    onDragEnd: () => {},
     onItemDone: () => {},
     onItemAdded: () => {}
 });

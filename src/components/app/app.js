@@ -139,7 +139,7 @@ class App extends Component {
         });
     };
 
-    onItemDragEnd = result => {
+    onDragEnd = result => {
         const { destination, source, draggableId, type } = result;
 
         if (!destination) {
@@ -150,6 +150,15 @@ class App extends Component {
             destination.droppableId === source.droppableId &&
             destination.index === source.index
         ) {
+            return;
+        }
+
+        if (type === "desk") {
+            const newDesksOrder = [...this.state.desksOrder];
+            newDesksOrder.splice(source.index, 1);
+            newDesksOrder.splice(destination.index, 0, draggableId);
+
+            this.setState({ desksOrder: newDesksOrder });
             return;
         }
 
@@ -249,7 +258,7 @@ class App extends Component {
                         desksOrder: desksOrder,
                         onDeskAdded: this.onDeskAdded,
                         onCardAdded: this.onCardAdded,
-                        onItemDragEnd: this.onItemDragEnd,
+                        onDragEnd: this.onDragEnd,
                         onItemDone: this.onItemDone,
                         onItemAdded: this.onItemAdded
                     }}
