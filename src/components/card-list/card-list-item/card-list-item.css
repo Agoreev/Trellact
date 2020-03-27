@@ -16,7 +16,8 @@
   color: #444;
   border-bottom: 1px solid #bbb;
   padding-bottom: 5px;
-  margin: 0 -10px 10px -10px;
+  padding-top: 30px;
+  margin: -30px -10px 10px -10px;
   text-overflow: ellipsis;
   overflow: hidden;
 }

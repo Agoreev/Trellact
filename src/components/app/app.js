@@ -14,6 +14,7 @@ class App extends Component {
         cards: {},
         items: {},
         desksOrder: [],
+        currentFilter: "all",
         loading: true,
         error: false
     };
@@ -234,11 +235,23 @@ class App extends Component {
             });
         }
     };
+
+    onChangeFilter = filter => {
+        this.setState({ currentFilter: filter });
+    };
     componentDidMount() {
         this.updateDesks();
     }
     render() {
-        const { desks, cards, items, desksOrder, loading, error } = this.state;
+        const {
+            desks,
+            cards,
+            items,
+            desksOrder,
+            currentFilter,
+            loading,
+            error
+        } = this.state;
         if (loading) {
             return <Spinner />;
         }
@@ -256,8 +269,10 @@ class App extends Component {
                         cards: cards,
                         items: items,
                         desksOrder: desksOrder,
+                        currentFilter: currentFilter,
                         onDeskAdded: this.onDeskAdded,
                         onCardAdded: this.onCardAdded,
+                        onChangeFilter: this.onChangeFilter,
                         onDragEnd: this.onDragEnd,
                         onItemDone: this.onItemDone,
                         onItemAdded: this.onItemAdded

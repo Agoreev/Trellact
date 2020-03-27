@@ -5,9 +5,11 @@ const DesksContext = React.createContext({
     cards: {},
     items: {},
     desksOrder: [],
+    currentFilter: "all",
     onDeskAdded: () => {},
     onCardAdded: () => {},
     onDragEnd: () => {},
+    onChangeFilter: () => {},
     onItemDone: () => {},
     onItemAdded: () => {}
 });
