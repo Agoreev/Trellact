@@ -12,7 +12,12 @@ const DeskList = () => {
     const desksList = desksOrder.map((deskId, index) => {
         const desk = desks[deskId];
         return (
-            <DeskListItem key={deskId} desk={desk} index={index}></DeskListItem>
+            <DeskListItem
+                key={deskId}
+                desk={desk}
+                deskId={deskId}
+                index={index}
+            ></DeskListItem>
         );
     });
     return (
@@ -22,7 +27,7 @@ const DeskList = () => {
                 direction="horizontal"
                 type="desk"
             >
-                {provided => (
+                {(provided) => (
                     <div
                         className="desks-list"
                         {...provided.droppableProps}

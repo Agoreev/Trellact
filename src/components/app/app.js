@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-import { Route, Switch, Link } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import { DesksPage, CardsPage } from "../pages";
 import { withTrelloService } from "../hoc";
 import DesksContext from "../desk-context";
 import Spinner from "../spinner";
 import ErrorIndicator from "../error-indicator";
+import Header from "../header";
 import "./app.css";
-import logo from "./logo.png";
 
 class App extends Component {
     state = {
@@ -16,80 +16,113 @@ class App extends Component {
         desksOrder: [],
         currentFilter: "all",
         loading: true,
-        error: false
+        error: false,
     };
 
     updateDesks = () => {
+        //this.setState({ loading: true });
         this.props.trelloService.getDesks().then(
-            data => {
+            (data) => {
                 this.setState({
                     desks: data.desks,
-                    cards: data.cards,
-                    items: data.items,
+                    // cards: data.cards,
+                    // items: data.items,
                     desksOrder: data.desksOrder,
                     loading: false,
-                    error: false
+                    error: false,
                 });
             },
-            error => {
+            (error) => {
                 this.setState({
                     desks: {},
                     cards: {},
                     items: {},
                     desksOrder: [],
                     loading: false,
-                    error: true
+                    error: true,
                 });
             }
         );
     };
-    onDeskAdded = deskName => {
-        this.props.trelloService.createDesk(deskName).then(
-            desk => {
-                this.setState(state => {
-                    return {
-                        desks: {
-                            ...state.desks,
-                            ...desk
-                        },
-                        desksOrder: [...state.desksOrder, Object.keys(desk)[0]]
-                    };
+    updateCards = (deskId) => {
+        this.props.trelloService.getCards(deskId).then(
+            (data) => {
+                this.setState({
+                    cards: data.cards,
+                    items: data.items,
                 });
             },
-            error => {
+            (error) => {
                 this.setState({
-                    error: true
+                    cards: {},
+                    items: {},
+                    error: true,
+                    loading: false,
+                });
+            }
+        );
+    };
+    onDeskAdded = (deskName) => {
+        const { trelloService } = this.props;
+        trelloService.createDesk(deskName).then(
+            (desk) => {
+                const newDesksOrder = [...this.state.desksOrder, desk.name];
+                trelloService.updateDesksOrder(newDesksOrder).then(
+                    (desksOrder) => {
+                        this.updateDesks();
+                    },
+                    (error) => {
+                        this.setState({
+                            error: true,
+                        });
+                    }
+                );
+            },
+            (error) => {
+                this.setState({
+                    error: true,
                 });
             }
         );
     };
 
     onCardAdded = (cardName, deskId) => {
-        this.props.trelloService.createCard(cardName, deskId).then(
-            card => {
-                const newCardIds = [
+        const { trelloService } = this.props;
+        trelloService.createCard(cardName).then(
+            (card) => {
+                const newCardsOrder = [
                     ...this.state.desks[deskId].cardIds,
-                    Object.keys(card)[0]
+                    card.name,
                 ];
-                this.setState(state => {
-                    return {
-                        cards: {
-                            ...state.cards,
-                            ...card
-                        },
-                        desks: {
-                            ...state.desks,
-                            [deskId]: {
-                                ...this.state.desks[deskId],
-                                cardIds: newCardIds
-                            }
-                        }
-                    };
-                });
+                trelloService.updateCardsOrder(deskId, newCardsOrder).then(
+                    (cardsOrder) => {
+                        this.updateCards(deskId);
+                    },
+                    (error) => {
+                        this.setState({
+                            error: true,
+                        });
+                    }
+                );
+                // this.setState((state) => {
+                //     return {
+                //         cards: {
+                //             ...state.cards,
+                //             ...card,
+                //         },
+                //         desks: {
+                //             ...state.desks,
+                //             [deskId]: {
+                //                 ...this.state.desks[deskId],
+                //                 cardIds: newCardIds,
+                //             },
+                //         },
+                //     };
+                // });
             },
-            error => {
+            (error) => {
                 this.setState({
-                    error: true
+                    error: true,
                 });
             }
         );
@@ -97,50 +130,50 @@ class App extends Component {
 
     onItemAdded = (itemName, cardId) => {
         this.props.trelloService.createItem(itemName, cardId).then(
-            item => {
+            (item) => {
                 const newItemIds = [
                     ...this.state.cards[cardId].itemIds,
-                    Object.keys(item)[0]
+                    Object.keys(item)[0],
                 ];
-                this.setState(state => {
+                this.setState((state) => {
                     return {
                         items: {
                             ...state.items,
-                            ...item
+                            ...item,
                         },
                         cards: {
                             ...state.cards,
                             [cardId]: {
                                 ...this.state.cards[cardId],
-                                itemIds: newItemIds
-                            }
-                        }
+                                itemIds: newItemIds,
+                            },
+                        },
                     };
                 });
             },
-            error => {
+            (error) => {
                 this.setState({
-                    error: true
+                    error: true,
                 });
             }
         );
     };
 
-    onItemDone = item => {
-        this.setState(state => {
+    onItemDone = (item) => {
+        this.setState((state) => {
             return {
                 items: {
                     ...state.items,
                     [item.id]: {
                         ...item,
-                        done: item.done ? false : true
-                    }
-                }
+                        done: item.done ? false : true,
+                    },
+                },
             };
         });
     };
 
-    onDragEnd = result => {
+    onDragEnd = (result) => {
         const { destination, source, draggableId, type } = result;
 
         if (!destination) {
@@ -169,15 +202,15 @@ class App extends Component {
             newCardOrder.splice(source.index, 1);
             newCardOrder.splice(destination.index, 0, draggableId);
 
-            this.setState(state => {
+            this.setState((state) => {
                 return {
                     desks: {
                         ...state.desks,
                         [desk.id]: {
                             ...desk,
-                            cardIds: newCardOrder
-                        }
-                    }
+                            cardIds: newCardOrder,
+                        },
+                    },
                 };
             });
             return;
@@ -197,15 +230,15 @@ class App extends Component {
 
             const newCard = {
                 ...card,
-                itemIds: newItemIds
+                itemIds: newItemIds,
             };
 
-            this.setState(state => {
+            this.setState((state) => {
                 return {
                     cards: {
                         ...state.cards,
-                        [newCard.id]: newCard
-                    }
+                        [newCard.id]: newCard,
+                    },
                 };
             });
         } else {
@@ -214,29 +247,29 @@ class App extends Component {
             startItemIds.splice(source.index, 1);
             const newStart = {
                 ...start,
-                itemIds: startItemIds
+                itemIds: startItemIds,
             };
 
             const finishItemIds = [...finish.itemIds];
             finishItemIds.splice(destination.index, 0, draggableId);
             const newFinish = {
                 ...finish,
-                itemIds: finishItemIds
+                itemIds: finishItemIds,
             };
 
-            this.setState(state => {
+            this.setState((state) => {
                 return {
                     cards: {
                         ...state.cards,
                         [newStart.id]: newStart,
-                        [newFinish.id]: newFinish
-                    }
+                        [newFinish.id]: newFinish,
+                    },
                 };
             });
         }
     };
 
-    onChangeFilter = filter => {
+    onChangeFilter = (filter) => {
         this.setState({ currentFilter: filter });
     };
     componentDidMount() {
@@ -250,19 +283,20 @@ class App extends Component {
             desksOrder,
             currentFilter,
             loading,
-            error
+            error,
         } = this.state;
+        let spinner = null;
         if (loading) {
-            return <Spinner />;
+            spinner = <Spinner />;
         }
         if (error) {
             return <ErrorIndicator />;
         }
         return (
             <div className="app container">
-                <Link to="/" className="logo">
-                    <img src={logo} alt="logo" />
-                </Link>
+                <Header />
+                {spinner}
+
                 <DesksContext.Provider
                     value={{
                         desks: desks,
@@ -270,12 +304,13 @@ class App extends Component {
                         items: items,
                         desksOrder: desksOrder,
                         currentFilter: currentFilter,
+                        updateCards: this.updateCards,
                         onDeskAdded: this.onDeskAdded,
                         onCardAdded: this.onCardAdded,
                         onChangeFilter: this.onChangeFilter,
                         onDragEnd: this.onDragEnd,
                         onItemDone: this.onItemDone,
-                        onItemAdded: this.onItemAdded
+                        onItemAdded: this.onItemAdded,
                     }}
                 >
                     <Switch>

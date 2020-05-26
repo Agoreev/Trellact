@@ -1,109 +1,128 @@
 export default class TrelloService {
+    _apiBase = "https://trellact.firebaseio.com";
+
+    async getResource(url) {
+        const res = await fetch(`${this._apiBase}${url}`);
+
+        if (!res.ok) {
+            throw new Error(`Could not fetch ${url}, received ${res.status}`);
+        }
+        return await res.json();
+    }
+
+    async postResource(url, data) {
+        const res = await fetch(`${this._apiBase}${url}`, {
+            method: "POST",
+            body: JSON.stringify(data),
+        });
+
+        if (!res.ok) {
+            throw new Error(`Could not fetch ${url}, received ${res.status}`);
+        }
+        return await res.json();
+    }
+
+    async patchResource(url, data) {
+        const res = await fetch(`${this._apiBase}${url}`, {
+            method: "PATCH",
+            body: JSON.stringify(data),
+        });
+
+        if (!res.ok) {
+            throw new Error(`Could not fetch ${url}, received ${res.status}`);
+        }
+        return await res.json();
+    }
+
     maxDeskId = 100;
     maxCardId = 100;
     maxItemId = 100;
 
-    data = {
-        desks: {
-            "desk-1": {
-                id: "desk-1",
-                name: "Tasks",
-                cardIds: ["card-1", "card-2"]
-            }
-        },
-        cards: {
-            "card-1": {
-                id: "card-1",
-                name: "Monday",
-                itemIds: ["item-1", "item-2"]
-            },
-            "card-2": {
-                id: "card-2",
-                name: "Thuesday",
-                itemIds: ["item-3", "item-4"]
-            }
-        },
-        items: {
-            "item-1": {
-                id: "item-1",
-                name: "Clean house"
-            },
-            "item-2": {
-                id: "item-2",
-                name: "Make dinner"
-            },
-            "item-3": {
-                id: "item-3",
-                name: "Make homework"
-            },
-            "item-4": {
-                id: "item-4",
-                name: "Go to gym"
-            }
-        },
-        desksOrder: ["desk-1"]
+    getDesks = async () => {
+        const desks = await this.getResource(`/allDesks/desks.json`);
+        const desksOrder = await this.getResource(`/allDesks/desksOrder.json`);
+        return { desks: desks, desksOrder: desksOrder };
     };
 
-    getDesks = () => {
-        return new Promise(resolve => {
-            resolve(this.data);
-        });
+    getCards = async (deskId) => {
+        const desk = await this.getResource(`/allDesks/desks/${deskId}.json`);
+
+        // Load cards for specific desk here
+        return;
     };
 
-    createDesk = name => {
-        return new Promise(resolve => {
-            const newDeskId = "desk-" + this.maxDeskId++;
-            const desk = {
-                [newDeskId]: {
-                    id: newDeskId,
-                    name: name,
-                    cardIds: []
-                }
-            };
-            //this.data.desks = { ...this.data.desks, desk };
-            // this.data.desksOrder = [...this.data.desksOrder, newDeskId];
-            resolve(desk);
+    createDesk = async (name) => {
+        const res = await this.postResource(`/allDesks/desks.json`, {
+            name: name,
+            cardIds: [],
         });
+        return res;
     };
 
-    createCard = (name, deskId) => {
-        return new Promise(resolve => {
-            const newCardId = "card-" + this.maxCardId++;
-            const card = {
-                [newCardId]: {
-                    id: newCardId,
-                    name: name,
-                    itemIds: []
-                }
-            };
-            //this.data.cards = { ...this.data.cards, card };
-            // this.data.desks[deskId].cardIds.push(newCardId);
-            resolve(card);
+    updateDesksOrder = async (desksOrder) => {
+        const res = await this.patchResource(`/allDesks.json`, {
+            desksOrder,
         });
+        return res;
+    };
+
+    // createDesk = (name) => {
+    //     return new Promise((resolve) => {
+    //         const newDeskId = "desk-" + this.maxDeskId++;
+    //         const desk = {
+    //             [newDeskId]: {
+    //                 id: newDeskId,
+    //                 name: name,
+    //                 cardIds: [],
+    //             },
+    //         };
+    //         resolve(desk);
+    //     });
+    // };
+
+    // createCard = (name, deskId) => {
+    //     return new Promise((resolve) => {
+    //         const newCardId = "card-" + this.maxCardId++;
+    //         const card = {
+    //             [newCardId]: {
+    //                 id: newCardId,
+    //                 name: name,
+    //                 itemIds: [],
+    //             },
+    //         };
+    //         resolve(card);
+    //     });
+    // };
+    createCard = async (name) => {
+        const res = await this.postResource(`/allDesks/cards.json`, {
+            name: name,
+            itemIds: [],
+        });
+        return res;
+    };
+    updateCardsOrder = async (deskId, cardsOrder) => {
+        const res = await this.patchResource(`/allDesks/desks/${deskId}.json`, {
+            cardsOrder,
+        });
+        return res;
     };
 
     createItem = (name, cardId) => {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             const newItemId = "item-" + this.maxItemId++;
 
             const item = {
                 [newItemId]: {
                     id: newItemId,
-                    name: name
-                }
+                    name: name,
+                },
             };
-
-            //this.data.items = { ...this.data.items, item };
-            // this.data.cards[cardId].itemIds = [
-            //     ...this.data.cards[cardId].itemIds,
-            //     newItemId
-            // ];
             resolve(item);
         });
     };
 
-    setItemState = itm => {
-        return new Promise(resolve => {
+    setItemState = (itm) => {
+        return new Promise((resolve) => {
             const item = this.data.items[itm.id];
             item["done"] = item["done"] ? false : true;
             resolve(item);

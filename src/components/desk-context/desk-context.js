@@ -6,11 +6,12 @@ const DesksContext = React.createContext({
     items: {},
     desksOrder: [],
     currentFilter: "all",
+    updateCards: () => {},
     onDeskAdded: () => {},
     onCardAdded: () => {},
     onDragEnd: () => {},
     onChangeFilter: () => {},
     onItemDone: () => {},
-    onItemAdded: () => {}
+    onItemAdded: () => {},
 });
 export default DesksContext;

@@ -44,17 +44,6 @@ a {
   margin-top: 30px;
 }
 
-.logo {
-  display: block;
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.logo img {
-  width: 100px;
-  height: 100px;
-}
-
 .btn {
   border: 0;
   border-radius: 0.25rem;
