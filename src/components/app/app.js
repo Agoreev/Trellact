@@ -44,6 +44,21 @@ class App extends Component {
             }
         );
     };
+
+    //Updates desks order on server
+    updateDesksOrder = (newDesksOrder) => {
+        const { trelloService } = this.props;
+        trelloService.updateDesksOrder(newDesksOrder).then(
+            (desksOrder) => {
+                this.updateDesks();
+            },
+            (error) => {
+                this.setState({
+                    error: true,
+                });
+            }
+        );
+    };
     updateCards = (deskId) => {
         this.props.trelloService.getCards(deskId).then(
             (data) => {
@@ -66,17 +81,9 @@ class App extends Component {
         const { trelloService } = this.props;
         trelloService.createDesk(deskName).then(
             (desk) => {
+                console.log(desk);
                 const newDesksOrder = [...this.state.desksOrder, desk.name];
-                trelloService.updateDesksOrder(newDesksOrder).then(
-                    (desksOrder) => {
-                        this.updateDesks();
-                    },
-                    (error) => {
-                        this.setState({
-                            error: true,
-                        });
-                    }
-                );
+                this.updateDesksOrder(newDesksOrder);
             },
             (error) => {
                 this.setState({
@@ -193,6 +200,7 @@ class App extends Component {
             newDesksOrder.splice(destination.index, 0, draggableId);
 
             this.setState({ desksOrder: newDesksOrder });
+            this.updateDesksOrder(newDesksOrder);
             return;
         }
 

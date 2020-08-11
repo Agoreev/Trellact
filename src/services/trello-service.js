@@ -46,9 +46,14 @@ export default class TrelloService {
 
     getCards = async (deskId) => {
         const desk = await this.getResource(`/allDesks/desks/${deskId}.json`);
-
+        console.log(desk);
+        const cardIds = desk.cardIds ? desk.card : [];
+        const deskWithCards = {
+            deskName: desk.name,
+            cardIds: cardIds,
+        };
         // Load cards for specific desk here
-        return;
+        return deskWithCards;
     };
 
     createDesk = async (name) => {
