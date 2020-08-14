@@ -1,5 +1,4 @@
-#Tellact
-
+# Tellact
 📝✔️ToDo List with Drag&Drop (React)
 
 In the future it will be connected to prisma db via apollo client
